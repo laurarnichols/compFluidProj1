@@ -41,6 +41,7 @@ if i == 1 %#ok<*IJCL>
         aW = 0;
         aP = 1;
         aE = 0;
+        const = BCs(1);
     elseif BCtype(1) == 2
         aW = 0;
         aP = 0;
@@ -53,6 +54,7 @@ elseif i == length(A)
         aW = 0;
         aP = 1;
         aE = 0;
+        const = BCs(2);
     elseif BCtype(2) == 2
         aW = 0;
         aP = 0;
