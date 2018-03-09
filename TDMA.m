@@ -1,4 +1,4 @@
-function [ T, count ] = TDMA( n, T, A, Cp, j, loopCount )
+function [ T, count ] = TDMA( n, T, A, Cp )
 %------------------------------------------------------
 % Laura Nichols
 % 13 February 2018
