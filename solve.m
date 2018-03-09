@@ -17,29 +17,29 @@ elseif algo == 2 && dim == 1
     [~, ~, a, b] = setMatrix(T0, 1, algo, n, BCtype, BCs, k, A, dx);
     [T, count] = gaussSeidel(n, T0, a, b);
 elseif dim == 2
-    error('Shouldn''t get here');
-    count = 1;
+    loopCount = 1;
     R = 1;
     epsilon = 0.01;
     T = T0;
+    count = 0;
     
     while R > epsilon
         for j = 2:n(2)+1
             [Ac, Cp, ~, ~] = setMatrix(T, j, algo, n, BCtype, BCs, k, A, dx, dy);
-            [T(j,:), count] = TDMA(n, T0(j,:), Ac, Cp);
+            [T(j,:), newCount] = TDMA(n(1), T0(j,:), Ac, Cp, j, loopCount);
+            count = count + newCount;
         end
         
         T = fixBounds(T, BCtype, BCs, k, A, dx, dy);
-        
-        Told = T;
-        
-        if count == 1
-            R0 = getResidual(Told, T);
+                
+        if loopCount == 1
+            R0 = getResidual(T0, T);
         else
             R = getResidual(Told, T)/R0;
         end
 
-        count = count + 1;
+        Told = T;
+        loopCount = loopCount + 1;
     end
 else
     error(['Sorry, solve is not able to handle'... 

@@ -44,13 +44,13 @@ a = 0;
 b = 0;
 
 % Initialize for speed
-C = zeros(n+2,1);
-beta = zeros(n+2,1);
-D = ones(n+2,1);
-alpha = zeros(n+2,1);
+C = zeros(n(1)+2,1);
+beta = zeros(n(1)+2,1);
+D = ones(n(1)+2,1);
+alpha = zeros(n(1)+2,1);
 
 % Populate coefficients
-for i = 1:n+2
+for i = 1:n(1)+2
     if dim == 1
         [aP, aE, aW, const] = getCoefs(i, BCtype, BCs, gamma, A, dx);
 
@@ -75,23 +75,23 @@ if algo == 1
     % to make TDMA more accurate
 
     % Initialize for speed
-    Ac = zeros(n+2,1);
-    Cp = zeros(n+2,1);
+    Ac = zeros(n(1)+2,1);
+    Cp = zeros(n(1)+2,1);
 
     % Set first values
     Ac(1) = 0;
     Cp(1) = T(row,1);
 
     % Populate cofficients
-    for i = 2:n+1
+    for i = 2:n(1)+1
         Ac(i) = alpha(i)/(D(i) - beta(i)*Ac(i-1));
         Cp(i) = (beta(i)*Cp(i-1) + C(i))/(D(i) - beta(i)*Ac(i-1));
     end
 
 
     % Set last values
-    Ac(n+2) = 0;
-    Cp(n+2) = T(row,end);
+    Ac(n(1)+2) = 0;
+    Cp(n(1)+2) = T(row,end);
 elseif algo == 2
     % Put original coefficients in matrix for 
     % Gauss-Seidel
@@ -99,17 +99,17 @@ elseif algo == 2
     b = C;
     
     % Initialize for speed
-    a = zeros(n+2);
+    a = zeros(n(1)+2);
 
     % Set first and last values
     a(1,1) = 1;
-    a(n+2,n+2) = 1;
+    a(n(1)+2,n(1)+2) = 1;
 
     % Set loop variable
     startCol = 1;
     
     % Populate matrix
-    for row = 2:n+1
+    for row = 2:n(1)+1
         a(row,startCol) = -beta(row);
         a(row,startCol+1) = D(row);
         a(row,startCol+2) = -alpha(row);
