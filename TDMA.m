@@ -11,13 +11,16 @@ count = 1;
 R = 1;
 epsilon = 0.001;
 
+% Loop until converged
 while R > epsilon
     Told = T;
     
+    % Actual solution equation
     for i = n+1:-1:2
         T(i) = A(i)*T(i+1) + Cp(i);
     end
     
+    % Get residual to test
     if count == 1
         R0 = getResidual(Told, T);
     else

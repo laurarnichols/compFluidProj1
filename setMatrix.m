@@ -1,4 +1,4 @@
-function [ Ac, Cp, a, b ] = setMatrix( T, row, algo, n, BCtype, BCs, gamma, A, dx, dy )
+function [ Ac, Cp, a, b ] = setMatrix( T, j, algo, n, BCtype, BCs, gamma, A, dx, dy, u, rho, rowOrCol )
 %--------------------------------------------------------
 % This formula generates the coefficients in the 
 % equation
@@ -31,6 +31,7 @@ function [ Ac, Cp, a, b ] = setMatrix( T, row, algo, n, BCtype, BCs, gamma, A, d
 % Laura Nichols
 %--------------------------------------------------------
 
+% Check if input has correct size
 if isvector(BCs)
     dim = 1;
 else
@@ -58,14 +59,38 @@ for i = 1:n(1)+2
         beta(i) = aW;
         D(i) = aP;
         alpha(i) = aE;
-    elseif dim == 2
-        [aP1, aE, aW, const1] = getCoefs(i, BCtype(1,:), BCs(2,:), gamma(row,:), A(row,:), dx(row,:));
-        [aP2, aN, aS, const2] = getCoefs(i, BCtype(2,:), BCs(2,:), gamma(:,i), A(:,i), dy(:,i));
-        
-        C(i) = const1 + const2 + aN*T(row+1,i) + aS*T(row-1,i);
+    elseif dim == 2 && rowOrCol == 1
+        row = j;
+        col = i;
+        % Get eastern and western
+        [aP1, aE, aW, const1] = getCoefs(col, BCtype(1,:), BCs(2,:), gamma(row,:), A(row,:), dx(row,:), u(row,:), rho(row,:));
+        % Get northern and southern
+        [aP2, aN, aS, const2] = getCoefs(row, BCtype(2,:), BCs(2,:), gamma(:,col), A(:,col), dy(:,col), zeros(size(u(row,:))), rho(row,:));
+                
+        % Set coefficients
+        C(i) = const1 + const2 + aN*T(row+1,col) + aS*T(row-1,col);
         beta(i) = aW;
         D(i) = aP1 + aP2;
         alpha(i) = aE;
+        
+%         C(i)
+%         beta(i)
+%         D(i)
+%         alpha(i)
+%         input('Waiting... ');
+    elseif dim == 2 && rowOrCol == 2
+        row = i;
+        col = j;
+        % Get eastern and western
+        [aP1, aE, aW, const1] = getCoefs(col, BCtype(1,:), BCs(2,:), gamma(row,:), A(row,:), dx(row,:), u(row,:), rho(row,:));
+        % Get northern and southern
+        [aP2, aN, aS, const2] = getCoefs(row, BCtype(2,:), BCs(2,:), gamma(:,col), A(:,col), dy(:,col), zeros(size(u(row,:))), rho(row,:));
+        
+        % Set coefficients
+        C(i) = const1 + const2 + aE*T(row,col+1) + aW*T(row,col-1);
+        beta(i) = aS;
+        D(i) = aP1 + aP2;
+        alpha(i) = aN;
     end
 end
 

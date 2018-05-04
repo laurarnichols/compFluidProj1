@@ -7,7 +7,7 @@ function [ R ] = getResidual(phi1, phi2)
 % sum of squares of the difference between 2 solutions
 %------------------------------------------------------
 
-R = sqrt(sum((phi2 - phi1).^2));
+R = sqrt(sum(sum((phi2 - phi1).^2)));
 
 end
 

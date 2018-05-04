@@ -1,7 +1,7 @@
 function [ T ] = fixBounds( T, BCtype, BCs, k, A, dx, dy )
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
 
+% Set the bounds to be the correct temperature because
+% they are not calculated in the actual algorithm
 if BCtype(1,1) == 2
     T(:,1) = dx(:,1)*BCs(1,1)./(k(:,1).*A(:,1)) - T(:,2);
 elseif BCtype(1,2) == 2
